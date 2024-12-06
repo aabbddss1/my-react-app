@@ -20,11 +20,37 @@ function AddCustomer() {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Customer Details:', customer);
-    // Logic to handle form submission, e.g., API call to add customer
-  };
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  
+  try {
+    const response = await fetch('http://<your-ec2-ip>:5001/api/customers', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(customer),
+    });
+
+    if (response.ok) {
+      alert('Customer added successfully!');
+      setCustomer({
+        name: '',
+        email: '',
+        phone: '',
+        address: '',
+        city: '',
+        postalCode: '',
+      });
+    } else {
+      const errorData = await response.json();
+      alert(`Error: ${errorData.message}`);
+    }
+  } catch (error) {
+    alert('Error adding customer:', error);
+  }
+};
+
 
   return (
     <div className="add-customer-page">
